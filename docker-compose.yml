@@ -30,7 +30,7 @@ services:
       - ./data/db:/var/lib/postgresql/data
 
   redis:
-    image: redis:alpine
+    image: redis:7.2.1-alpine
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       interval: 10s
