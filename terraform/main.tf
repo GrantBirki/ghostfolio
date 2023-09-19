@@ -1,15 +1,3 @@
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  features {}
-  # Ignore Auth Warnings
-  skip_provider_registration = true
-
-  client_id       = var.CLIENT_ID
-  client_secret   = var.CLIENT_SECRET
-  tenant_id       = var.TENANT_ID
-  subscription_id = var.SUBSCRIPTION_ID
-}
-
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "project_rg" {
   name     = "${var.PROJECT_NAME}_rg"
@@ -63,7 +51,7 @@ resource "azurerm_network_security_group" "project_sec_group" {
     priority                   = 300
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "TCP"
+    protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
@@ -75,7 +63,7 @@ resource "azurerm_network_security_group" "project_sec_group" {
     priority                   = 301
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "TCP"
+    protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
     source_address_prefix      = "*"
@@ -87,7 +75,7 @@ resource "azurerm_network_security_group" "project_sec_group" {
     priority                   = 302
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "TCP"
+    protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "443"
     source_address_prefix      = "*"
