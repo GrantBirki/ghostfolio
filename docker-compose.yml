@@ -18,6 +18,25 @@ services:
       redis:
         condition: service_healthy
 
+  caddy:
+    container_name: caddy-service
+    restart: unless-stopped
+    build:
+      context: ./src/caddy
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./data/caddy_data:/data
+      - ./data/caddy_config:/config
+    depends_on:
+      - ghostfolio
+    environment:
+      PROXY_BACKEND: ghostfolio
+      PROXY_PORT: 3333
+      DOMAIN: ${DOMAIN}
+
   postgres:
     image: postgres:15
     restart: unless-stopped
