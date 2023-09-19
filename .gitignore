@@ -2,3 +2,8 @@
 tmp/
 data/
 *.pem
+
+# Terraform
+terraform.auto.tfvars.json
+terraform/.terraform/providers
+**/.terraform/*
