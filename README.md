@@ -1,1 +1,1 @@
-# ghostfolio
+# ghostfolio 👻
