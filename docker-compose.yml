@@ -1,7 +1,8 @@
 version: "3.9"
 services:
   ghostfolio:
-    image: ghostfolio/ghostfolio:latest
+    image: ghostfolio/ghostfolio:2.4.0
+    restart: unless-stopped
     env_file:
       - ./.env
     environment:
@@ -19,6 +20,7 @@ services:
 
   postgres:
     image: postgres:15
+    restart: unless-stopped
     env_file:
       - ./.env
     healthcheck:
@@ -31,6 +33,7 @@ services:
 
   redis:
     image: redis:7.2.1-alpine
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       interval: 10s
