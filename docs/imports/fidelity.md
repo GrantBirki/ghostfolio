@@ -2,6 +2,9 @@
 
 Go to the following page to pull down a CSV of your transactions:
 
+1. view statements
+2. transaction history
+
 ![img](../assets/fidelity.png)
 
 You should get some data in a CSV like this:
@@ -16,4 +19,6 @@ Date,Investment,Transaction Type,Amount,Shares/Unit
 
 > The file will probably be named `history.csv`
 
-Now you can parse it with `script/format <path_to_csv> <account_id>`
+Set the env var `FIDELITY=true` before running the following script
+
+Now you can parse it with `FIDELITY=true script/format <path_to_csv> <account_id>`

@@ -17,15 +17,15 @@ class Format
         output: "fee"
       },
       quantity: {
-        inputs: ["Quantity"],
+        inputs: ["Quantity", "Shares/Unit"],
         output: "quantity"
       },
       symbol: {
-        inputs: ["Symbol", "Ticker", "Instrument"],
+        inputs: ["Symbol", "Ticker", "Instrument", "Investment"],
         output: "symbol"
       },
       type: {
-        inputs: ["Action", "Trans Code"],
+        inputs: ["Action", "Trans Code", "Transaction Type"],
         output: "type",
         sub_translations: {
           "Buy": "buy",
@@ -105,13 +105,13 @@ class Format
     @csv.each do |row|
       if row[@translations[:unit_price][:output]] =~ /\D/
         row[@translations[:unit_price][:output]] =
-          row[@translations[:unit_price][:output]].gsub(/[^0-9\.]/, "")
+          row[@translations[:unit_price][:output]].gsub(/[^0-9.]/, "")
       end
 
       # remove non-numeric characters from the 'fee' row
       if row[@translations[:fee][:output]] =~ /\D/
         row[@translations[:fee][:output]] =
-          row[@translations[:fee][:output]].gsub(/[^0-9\.]/, "")
+          row[@translations[:fee][:output]].gsub(/[^0-9.]/, "")
       end
     end
   end
@@ -175,7 +175,9 @@ class Format
     @csv.delete_if { |row| discard_type_fields.include?(row[@translations[:type][:output]].to_s) }
 
     # remove any 'quantity' rows that are empty
-    @csv.delete_if { |row| row[@translations[:quantity][:output]].nil? || row[@translations[:quantity][:output]].empty? || row[@translations[:quantity][:output]] == "" }
+    @csv.delete_if do |row|
+      row[@translations[:quantity][:output]].nil? || row[@translations[:quantity][:output]].empty? || row[@translations[:quantity][:output]] == ""
+    end
   end
 
   def robinhood_formatting!
@@ -183,12 +185,57 @@ class Format
     @csv.delete("Process Date")
     @csv.delete("Settle Date")
     @csv.delete("Description")
-    @csv.delete("Amount")
+    @csv.delete("Amount") if ENV.fetch("FIDELITY", nil) != "true"
 
     # remove any rows in the "type" column that are set to the following:
     # i have no idea what these IDs mean 🤷
     types_to_remove = ["STC", "OEXP", "BTO", "SPL", "CONV", "STO", "OASGN", "SOFF", "BCXL"]
     @csv.delete_if { |row| types_to_remove.include?(row[@translations[:type][:output]].to_s) }
+  end
+
+  def fidelity_pre_formatting!
+    # reconstruct the csv table in the exact same way except with the Amount header changed to price
+    new_headers = []
+    @csv.headers.each do |header|
+      header = "price" if header == "Amount"
+      new_headers << header
+    end
+
+    @csv = CSV::Table.new(@csv.map { |row| CSV::Row.new(new_headers, row.fields) })
+  end
+
+  def fidelity_formatting!
+    @csv.each do |row|
+      # replace all symbol values that are VAN IS S&amp;P500 IDX TR with VSPVX
+      if row[@translations[:symbol][:output]] == "VAN IS S&amp;P500 IDX TR"
+        row[@translations[:symbol][:output]] =
+          "VSPVX"
+      end
+
+      # change all 'types' of 'Contributions' to 'buy'
+      row[@translations[:type][:output]] = "buy" if row[@translations[:type][:output]] == "Contributions"
+
+      # do the same as the above line but for 'Transfers'
+      row[@translations[:type][:output]] = "buy" if row[@translations[:type][:output]] == "Transfers"
+    end
+
+    # if a rows 'type' is 'buy' but price,quantity are both 0 or variations of 0 (0.0, 0.00, or 0.000) remove the row
+    @csv.delete_if do |row|
+      if row[@translations[:type][:output]] == "buy" && row[@translations[:unit_price][:output]].to_f == 0.0 && row[@translations[:quantity][:output]].to_f == 0.0
+        true
+      else
+        false
+      end
+    end
+
+    # delete all 'type' rows that are of the following
+    remove_rows = [
+      "Exchange In",
+      "Exchange Out",
+      "Change on Market Value"
+    ]
+
+    @csv.delete_if { |row| remove_rows.include?(row[@translations[:type][:output]].to_s) }
   end
 
   private

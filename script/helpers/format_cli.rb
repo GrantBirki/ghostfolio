@@ -14,6 +14,9 @@ class FormatCLI
   end
 
   def run
+    # pre-processing
+    @format.fidelity_pre_formatting!
+
     # header translation
     @format.translate!
     @format.add_required_headers!
@@ -25,6 +28,7 @@ class FormatCLI
     # platform specific formatting
     @format.schwab_formatting!
     @format.robinhood_formatting!
+    @format.fidelity_formatting!
 
     # write the formatted csv file to the disk
     @format.write!
