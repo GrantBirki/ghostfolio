@@ -254,13 +254,36 @@ class Format
     ]
 
     @csv.delete_if { |row| remove_rows.include?(row[@translations[:type][:output]].to_s) }
+
+    # for each row in the csv, loop through it and replace the 'price' field with the resulting data from the 'historical_stock_price' method
+    if ENV.fetch("FIDELITY", nil) == "true"
+      @csv.each do |row|
+        price = historical_stock_price(row[@translations[:symbol][:output]], row[@translations[:date][:output]])
+
+        # update the row with the new price
+        row[@translations[:unit_price][:output]] = price
+      end
+    end
   end
 
   private
 
   # helper method to get the historical stock price for a given symbol and date
+  # CSV's with 5 year historical data are available from Yahoo Finance
   def historical_stock_price(symbol, date)
     parsed_date = Date.strptime(date, '%d/%m/%Y')
+    # covert the date to YYYY-MM-DD format
+    parsed_date = parsed_date.strftime("%Y-%m-%d")
+
+    # load the following CSV file into memory ex: historical_data/<TICKER>.csv
+    historical_csv_data = CSV.read("lib/historical_data/#{symbol}.csv", headers: true)
+
+    # loop through each row in the CSV until we find a matching date
+    historical_csv_data.each do |row|
+      next unless row["Date"] == parsed_date
+
+      return row["Close"]
+    end
   end
 
   def load_csv
