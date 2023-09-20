@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Grab the first CLI argument
+CSV_FILE=$1
+
+bundle exec ruby script/helpers/format_cli.rb $CSV_FILE
