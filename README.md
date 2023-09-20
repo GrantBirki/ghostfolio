@@ -4,6 +4,8 @@
 
 A self-hosted version of [ghostfolio](https://github.com/ghostfolio/ghostfolio), deployed in Azure
 
+![demo](docs/assets/demo.png)
+
 ## About ⭐
 
 This project is made for easy self-hosting and deployment of your own ghostfolio instance. It is designed to be deployed on a VM in Azure, but can be deployed anywhere that Docker (docker-compose) is supported. This project comes bundled with the following:
