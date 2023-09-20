@@ -14,4 +14,6 @@ Date,Investment,Transaction Type,Amount,Shares/Unit
 08/31/2023,VAN IS S&amp;P500 IDX TR,Transfers,"0.00","0.000"
 ```
 
+> The file will probably be named `history.csv`
+
 Now you can parse it with `script/format <path_to_csv> <account_id>`
