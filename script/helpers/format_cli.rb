@@ -7,11 +7,13 @@ CSV_INPUT_PATH = ARGV[0]
 
 class FormatCLI
   def initialize
-    @format = Format.new
+    @path = CSV_INPUT_PATH
+    @format = Format.new(@path)
   end
 
   def run
-    puts "Formatting #{CSV_INPUT_PATH}..."
+    @format.translate!
+    @format.write!
   end
 end
 
