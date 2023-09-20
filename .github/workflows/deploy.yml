@@ -27,9 +27,9 @@ jobs:
         if: ${{ steps.deployment-check.outputs.continue == 'true' }}
         uses: appleboy/ssh-action@4a03da89e5c43da56e502053be4bbcb293411883 # pin@v0.1.6
         with:
-          host: ${{ env.SSH_HOST }}
-          port: ${{ env.SSH_PORT }}
-          username: ${{ env.SSH_USERNAME }}
+          host: ${{ vars.SSH_HOST }}
+          port: ${{ vars.SSH_PORT }}
+          username: ${{ vars.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: ~/ghostfolio/script/deploy -r="main" -d="ghostfolio"
