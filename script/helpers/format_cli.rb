@@ -12,9 +12,17 @@ class FormatCLI
   end
 
   def run
+    # header translation
     @format.translate!
     @format.add_required_headers!
+
+    # row translation
+    @format.type_translation!
+
+    # platform specific formatting
     @format.schwab_formatting!
+
+    # write the formatted csv file to the disk
     @format.write!
   end
 end

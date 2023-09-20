@@ -25,7 +25,12 @@ class Format
       },
       type: {
         inputs: ["Action"],
-        output: "type"
+        output: "type",
+        sub_translations: {
+          "Reinvest Shares": "buy",
+          "Reinvest Dividend": "dividend",
+          "Journaled Shares": "buy"
+        }
       },
       unit_price: {
         inputs: ["Price"],
@@ -89,6 +94,24 @@ class Format
     return @csv
   end
 
+  # Helper function to translate the 'type' column
+  def type_translation!
+    @csv.each do |row|
+      # loop through all the type sub translations looking for a match
+      @translations[:type][:sub_translations].each do |key, value|
+        row_value = row[@translations[:type][:output]].to_s
+        key_string = key.to_s
+
+        # skip this row if the value doesn't match the key
+        next unless row_value == key_string
+
+        # update the row with the new value and break out of the loop
+        row[@translations[:type][:output]] = value
+        break
+      end
+    end
+  end
+
   # Helper function to specifically format the Schwab CSV file
   def schwab_formatting!
     date_regex = %r{\d{2}/\d{2}/\d{4}}
@@ -119,6 +142,15 @@ class Format
           0
       end
     end
+
+    # remove the entire row if the 'type' field contains any of the following values
+    discard_type_fields = [
+      "Bank Interest",
+      "MoneyLink Transfer",
+      "Journal"
+    ]
+
+    @csv.delete_if { |row| discard_type_fields.include?(row[@translations[:type][:output]].to_s) }
   end
 
   private
