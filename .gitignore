@@ -2,6 +2,7 @@
 tmp/
 data/
 *.pem
+.DS_Store
 
 # Terraform
 terraform.auto.tfvars.json
