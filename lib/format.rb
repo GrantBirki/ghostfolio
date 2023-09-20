@@ -105,6 +105,20 @@ class Format
 
     # remove any rows that contain "Transactions Total"
     @csv.delete_if { |row| row[@translations[:date][:output]] == "Transactions Total" }
+
+    # convert all 'date' rows to the following format: dd/MM/yyyy
+    @csv.each do |row|
+      row[@translations[:date][:output]] =
+        Date.strptime(row[@translations[:date][:output]], "%m/%d/%Y").strftime("%d/%m/%Y")
+    end
+
+    # if the 'fee' field is null, set it to zero
+    @csv.each do |row|
+      if row[@translations[:fee][:output]].nil? || row[@translations[:fee][:output]].empty? || row[@translations[:fee][:output]] == ""
+        row[@translations[:fee][:output]] =
+          0
+      end
+    end
   end
 
   private
