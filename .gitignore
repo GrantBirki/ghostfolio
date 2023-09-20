@@ -4,6 +4,12 @@ data/
 *.pem
 .DS_Store
 
+# Ruby
+.bundle
+bin
+coverage
+vendor/gems
+
 # Terraform
 terraform.auto.tfvars.json
 terraform/.terraform/providers
