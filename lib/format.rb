@@ -105,6 +105,12 @@ class Format
         row[@translations[:unit_price][:output]] =
           row[@translations[:unit_price][:output]].gsub(/[^0-9\.]/, "")
       end
+
+      # remove non-numeric characters from the 'fee' row
+      if row[@translations[:fee][:output]] =~ /\D/
+        row[@translations[:fee][:output]] =
+          row[@translations[:fee][:output]].gsub(/[^0-9\.]/, "")
+      end
     end
   end
 

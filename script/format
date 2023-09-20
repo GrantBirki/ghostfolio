@@ -7,7 +7,7 @@ CSV_FILE=$1
 ACCOUNT_ID=$2
 
 # if either argument is empty, exit
-if [ -z "$CSV_FILE" ] || [ -z "$ACCOUNT_ID" ]; then
+if [ -z "$ACCOUNT_ID" ] || [ -z "$CSV_FILE" ]; then
   echo "Usage: script/format <csv_file> <account_id>"
   echo "where <account_id> is this: https://github-production-user-asset-6210df.s3.amazonaws.com/23362539/269414808-bbf74937-d7f6-4dcd-af87-049bee2e29b9.png"
   exit 1
