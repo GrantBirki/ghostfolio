@@ -94,6 +94,16 @@ class Format
     return @csv
   end
 
+  def price_translation!
+    # loop through each 'price' row of the CSV and remove any non-numeric characters
+    @csv.each do |row|
+      if row[@translations[:unit_price][:output]] =~ /\D/
+        row[@translations[:unit_price][:output]] =
+          row[@translations[:unit_price][:output]].gsub(/[^0-9\.]/, "")
+      end
+    end
+  end
+
   # Helper function to translate the 'type' column
   def type_translation!
     @csv.each do |row|
@@ -151,6 +161,9 @@ class Format
     ]
 
     @csv.delete_if { |row| discard_type_fields.include?(row[@translations[:type][:output]].to_s) }
+
+    # remove any 'quantity' rows that are empty
+    @csv.delete_if { |row| row[@translations[:quantity][:output]].nil? || row[@translations[:quantity][:output]].empty? || row[@translations[:quantity][:output]] == "" }
   end
 
   private

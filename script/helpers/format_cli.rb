@@ -18,6 +18,7 @@ class FormatCLI
 
     # row translation
     @format.type_translation!
+    @format.price_translation!
 
     # platform specific formatting
     @format.schwab_formatting!
