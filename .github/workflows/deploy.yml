@@ -7,13 +7,24 @@ on:
 
 jobs:
   deploy:
+    if: github.event_name == 'push'
     environment: production
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: deployment check
+        uses: github/branch-deploy@v8.0.0
+        id: deployment-check
+        with:
+          merge_deploy_mode: "true"
+          environment: production
 
-      - name: SSH Remote Deploy
+      - name: checkout
+        if: ${{ steps.deployment-check.outputs.continue == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: ssh remote deploy
+        if: ${{ steps.deployment-check.outputs.continue == 'true' }}
         uses: appleboy/ssh-action@4a03da89e5c43da56e502053be4bbcb293411883 # pin@v0.1.6
         with:
           host: ${{ env.SSH_HOST }}
