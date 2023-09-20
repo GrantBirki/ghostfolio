@@ -4,7 +4,8 @@ require "csv"
 
 class Format
   # soured from: https://github.com/ghostfolio/ghostfolio/blob/c511ec7e33123679490b36495d9ca7a09f04d329/apps/client/src/app/services/import-activities.service.ts#L16-L30
-  def initialize(path)
+  def initialize(path, account_id)
+    @account_id = account_id
     @path = path
     @translations = {
       date: {
@@ -41,6 +42,9 @@ class Format
     @required_headers = {
       currency: {
         default: "USD"
+      },
+      accountid: {
+        default: @account_id
       }
     }
 

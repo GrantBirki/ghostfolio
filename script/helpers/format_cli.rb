@@ -4,11 +4,13 @@ require_relative "../../lib/format"
 
 # Get the first cli argument which is the file path
 CSV_INPUT_PATH = ARGV[0]
+ACCOUNT_ID = ARGV[1]
 
 class FormatCLI
   def initialize
     @path = CSV_INPUT_PATH
-    @format = Format.new(@path)
+    @account_id = ACCOUNT_ID
+    @format = Format.new(@path, @account_id)
   end
 
   def run
