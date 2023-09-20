@@ -206,10 +206,28 @@ class Format
 
   def fidelity_formatting!
     @csv.each do |row|
-      # replace all symbol values that are VAN IS S&amp;P500 IDX TR with VSPVX
+      # replace all symbol values that are VAN IS S&amp;P500 IDX TR with VFFSX
       if row[@translations[:symbol][:output]] == "VAN IS S&amp;P500 IDX TR"
         row[@translations[:symbol][:output]] =
-          "VSPVX"
+          "VFFSX"
+      end
+
+      # replace all symbol values that are FID GR CO POOL CL O with FDGRX
+      if row[@translations[:symbol][:output]] == "FID GR CO POOL CL O"
+        row[@translations[:symbol][:output]] =
+          "FDGRX"
+      end
+
+      # replace all symbol values that are SMID CAP VALUE ACCT with CRMAX
+      if row[@translations[:symbol][:output]] == "SMID CAP VALUE ACCT"
+        row[@translations[:symbol][:output]] =
+          "CRMAX"
+      end
+
+      # replace all symbol values that are DFA SM/MD CAP VAL with FSMVX
+      if row[@translations[:symbol][:output]] == "DFA SM/MD CAP VAL"
+        row[@translations[:symbol][:output]] =
+          "FSMVX"
       end
 
       # change all 'types' of 'Contributions' to 'buy'
