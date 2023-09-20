@@ -24,6 +24,7 @@ class FormatCLI
 
     # platform specific formatting
     @format.schwab_formatting!
+    @format.robinhood_formatting!
 
     # write the formatted csv file to the disk
     @format.write!

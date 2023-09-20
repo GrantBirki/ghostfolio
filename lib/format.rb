@@ -9,7 +9,7 @@ class Format
     @path = path
     @translations = {
       date: {
-        inputs: ["Date"],
+        inputs: ["Date", "Activity Date"],
         output: "date"
       },
       fee: {
@@ -21,13 +21,15 @@ class Format
         output: "quantity"
       },
       symbol: {
-        inputs: ["Symbol", "Ticker"],
+        inputs: ["Symbol", "Ticker", "Instrument"],
         output: "symbol"
       },
       type: {
-        inputs: ["Action"],
+        inputs: ["Action", "Trans Code"],
         output: "type",
         sub_translations: {
+          "Buy": "buy",
+          "Sell": "sell",
           "Reinvest Shares": "buy",
           "Reinvest Dividend": "dividend",
           "Journaled Shares": "buy"
@@ -174,6 +176,19 @@ class Format
 
     # remove any 'quantity' rows that are empty
     @csv.delete_if { |row| row[@translations[:quantity][:output]].nil? || row[@translations[:quantity][:output]].empty? || row[@translations[:quantity][:output]] == "" }
+  end
+
+  def robinhood_formatting!
+    # remove the following columns from the csv
+    @csv.delete("Process Date")
+    @csv.delete("Settle Date")
+    @csv.delete("Description")
+    @csv.delete("Amount")
+
+    # remove any rows in the "type" column that are set to the following:
+    # i have no idea what these IDs mean 🤷
+    types_to_remove = ["STC", "OEXP", "BTO", "SPL", "CONV", "STO", "OASGN", "SOFF", "BCXL"]
+    @csv.delete_if { |row| types_to_remove.include?(row[@translations[:type][:output]].to_s) }
   end
 
   private
