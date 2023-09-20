@@ -258,6 +258,11 @@ class Format
 
   private
 
+  # helper method to get the historical stock price for a given symbol and date
+  def historical_stock_price(symbol, date)
+    parsed_date = Date.strptime(date, '%d/%m/%Y')
+  end
+
   def load_csv
     puts "📁 loading csv file: #{@path}"
     CSV.read(@path, headers: true)
