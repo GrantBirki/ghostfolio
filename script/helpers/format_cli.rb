@@ -13,6 +13,8 @@ class FormatCLI
 
   def run
     @format.translate!
+    @format.add_required_headers!
+    @format.schwab_formatting!
     @format.write!
   end
 end

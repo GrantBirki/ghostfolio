@@ -33,6 +33,12 @@ class Format
       }
     }
 
+    @required_headers = {
+      currency: {
+        default: "USD"
+      }
+    }
+
     @csv = load_csv
   end
 
@@ -41,6 +47,18 @@ class Format
     puts "📁 writing formatted csv file: #{@path}"
     File.open(@path.gsub(".csv", "_formatted.csv"), "w") do |f|
       f.write(@csv.to_csv)
+    end
+  end
+
+  # A helper function to add any required headers that are missing from the CSV file
+  # If a required header is missing, it will be added to the CSV file with the default value for all rows
+  def add_required_headers!
+    puts "🔍 adding required headers..."
+    @required_headers.each do |header, value|
+      @csv.headers << header.to_s unless @csv.headers.include?(header.to_s)
+      @csv.each do |row|
+        row[header] = value[:default] unless row[header]
+      end
     end
   end
 
@@ -69,6 +87,24 @@ class Format
     @csv = CSV::Table.new(@csv.map { |row| CSV::Row.new(formatted_headers, row.fields) })
 
     return @csv
+  end
+
+  # Helper function to specifically format the Schwab CSV file
+  def schwab_formatting!
+    date_regex = %r{\d{2}/\d{2}/\d{4}}
+
+    # loop through each 'date' row of the CSV
+    @csv.each do |row|
+      match = row[@translations[:date][:output]].match(date_regex)
+      next unless match
+
+      new_date = match[0]
+      # update the row with the new date
+      row[@translations[:date][:output]] = new_date
+    end
+
+    # remove any rows that contain "Transactions Total"
+    @csv.delete_if { |row| row[@translations[:date][:output]] == "Transactions Total" }
   end
 
   private
