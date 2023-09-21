@@ -43,8 +43,27 @@ You can comment `.deploy` on the pull request to branch-deploy and test out the 
 
 When you first start up your ghostfolio instance, you will have no data at all. You'll likely want to import data from your brokerage accounts to get started. This repo comes with a script to help you do that. This script makes a "best effort" attempt to format the `.csv` data from your brokerage into a format that ghostfolio can import. It is not perfect, but it should get you most of the way there.
 
+The script is run like this:
+
+```bash
+script/format <path_to_csv> <account_id>
+```
+
+Here is an example:
+
+```bash
+script/format ~/Downloads/robinhood.csv abc123ab-ab01-ab01-ab01-abc123abc123
+```
+
+CLI args:
+
+- `<path_to_csv>` - The path to the `.csv` file you want to format
+- `<account_id>` - The ID of the account you want to import the data into - You can find your [account_id here](https://github-production-user-asset-6210df.s3.amazonaws.com/23362539/269414808-bbf74937-d7f6-4dcd-af87-049bee2e29b9.png)
+
 ### Supported Brokers
 
 - [Fidelity](./docs/imports/fidelity.md)
 - [Schwab](./docs/imports/schwab.md)
 - [Robinhood](./docs/imports/robinhood.md)
+
+> Note: You might need to do some refining of your data before or after running the `script/format` script in order for it to be imported correctly
