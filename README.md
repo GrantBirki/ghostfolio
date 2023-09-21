@@ -6,6 +6,8 @@ A self-hosted version of [ghostfolio](https://github.com/ghostfolio/ghostfolio),
 
 ![demo](docs/assets/demo.png)
 
+> This image is just an example
+
 ## About ⭐
 
 This project is made for easy self-hosting and deployment of your own ghostfolio instance. It is designed to be deployed on a VM in Azure, but can be deployed anywhere that Docker (docker-compose) is supported. This project comes bundled with the following:
@@ -36,3 +38,13 @@ This will deploy the `main` branch of ghostfolio
 Once your project is fully setup, you will likely want to apply updates from the upstream repository of ghostfolio. To do this, either wait for Dependabot to open a PR or open one yourself.
 
 You can comment `.deploy` on the pull request to branch-deploy and test out the update before fully "committing" to the change and merging the branch into `main`
+
+## Importing Data 📈
+
+When you first start up your ghostfolio instance, you will have no data at all. You'll likely want to import data from your brokerage accounts to get started. This repo comes with a script to help you do that. This script makes a "best effort" attempt to format the `.csv` data from your brokerage into a format that ghostfolio can import. It is not perfect, but it should get you most of the way there.
+
+### Supported Brokers
+
+- [Fidelity](./docs/imports/fidelity.md)
+- [Schwab](./docs/imports/schwab.md)
+- [Robinhood](./docs/imports/robinhood.md)
