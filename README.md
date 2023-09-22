@@ -65,5 +65,6 @@ CLI args:
 - [Fidelity](./docs/imports/fidelity.md)
 - [Schwab](./docs/imports/schwab.md)
 - [Robinhood](./docs/imports/robinhood.md)
+- [Wex](./docs/imports/wex.md)
 
 > Note: You might need to do some refining of your data before or after running the `script/format` script in order for it to be imported correctly
