@@ -31,6 +31,8 @@ class FormatCLI
     @format.robinhood_formatting!
     @format.fidelity_formatting!
 
+    @format.summary_display
+
     # write the formatted csv file to the disk
     @format.write!
   end

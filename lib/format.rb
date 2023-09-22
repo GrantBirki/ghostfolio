@@ -53,6 +53,24 @@ class Format
     @csv = load_csv
   end
 
+  # a helper function to display a summery of the CSV file in the terminal
+  def summary_display
+    total_stock_purchased = 0
+    total_stock_sold = 0
+    @csv.each do |row|
+      total_stock_purchased += row[@translations[:quantity][:output]].to_f * row[@translations[:unit_price][:output]].to_f - row[@translations[:fee][:output]].to_f
+
+      total_stock_sold += row[@translations[:quantity][:output]].to_f * row[@translations[:unit_price][:output]].to_f - row[@translations[:fee][:output]].to_f if row[@translations[:type][:output]] == "sell"
+    end
+
+    puts "\n=========================="
+    puts "📊 csv file summary 📊"
+    puts "💰 tranactions summary:"
+    puts "  - total stock purchased: $#{total_stock_purchased}"
+    puts "  - total stock sold: $#{total_stock_sold}"
+    puts "==========================\n\n"
+  end
+
   # Write the CSV file to the disk
   def write!
     puts "📁 writing formatted csv file: #{@path}"
@@ -211,14 +229,14 @@ class Format
           "dividend"
       end
 
-      if row[@translations[:type][:output]] == "Investment Withdrawal"
-        row[@translations[:type][:output]] =
-          "sell"
+      next unless row[@translations[:type][:output]] == "Investment Withdrawal"
 
-        # also convert the value from a negative to a positive
-        row[@translations[:quantity][:output]] =
-          row[@translations[:quantity][:output]].to_f.abs
-      end
+      row[@translations[:type][:output]] =
+        "sell"
+
+      # also convert the value from a negative to a positive
+      row[@translations[:quantity][:output]] =
+        row[@translations[:quantity][:output]].to_f.abs
     end
   end
 
@@ -304,13 +322,13 @@ class Format
     @csv.delete_if { |row| remove_rows.include?(row[@translations[:type][:output]].to_s) }
 
     # for each row in the csv, loop through it and replace the 'price' field with the resulting data from the 'historical_stock_price' method
-    if ENV.fetch("FIDELITY", nil) == "true"
-      @csv.each do |row|
-        price = historical_stock_price(row[@translations[:symbol][:output]], row[@translations[:date][:output]])
+    return unless ENV.fetch("FIDELITY", nil) == "true"
 
-        # update the row with the new price
-        row[@translations[:unit_price][:output]] = price
-      end
+    @csv.each do |row|
+      price = historical_stock_price(row[@translations[:symbol][:output]], row[@translations[:date][:output]])
+
+      # update the row with the new price
+      row[@translations[:unit_price][:output]] = price
     end
   end
 
