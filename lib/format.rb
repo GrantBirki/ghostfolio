@@ -17,15 +17,15 @@ class Format
         output: "fee"
       },
       quantity: {
-        inputs: ["Quantity", "Shares/Unit"],
+        inputs: ["Quantity", "Shares/Unit", "Units"],
         output: "quantity"
       },
       symbol: {
-        inputs: ["Symbol", "Ticker", "Instrument", "Investment"],
+        inputs: ["Symbol", "Ticker", "Instrument", "Investment", "FundName"],
         output: "symbol"
       },
       type: {
-        inputs: ["Action", "Trans Code", "Transaction Type"],
+        inputs: ["Action", "Trans Code", "Transaction Type", "TransName"],
         output: "type",
         sub_translations: {
           "Buy": "buy",
@@ -180,11 +180,55 @@ class Format
     end
   end
 
+  def wex_formatting!
+    # remove the 'Source' column from the CSV
+    @csv.delete("Source")
+
+    # delete all the rows with type 'Investment Purchase - Cash receipt'
+    # I just don't know what these are
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Cash receipt") }
+
+    # delete all type rows with 'Custodial Management'
+    # ghostfolio doesn't support fees yet IIRC
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Custodial Management") }
+
+    # skip cash withdrals on initial import ('Investment Withdrawal - Cash disbursement')
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Cash disbursement") }
+
+    @csv.each do |row|
+      if row[@translations[:symbol][:output]] == "AMERICAN FUNDS BALANCED FND R6"
+        row[@translations[:symbol][:output]] =
+          "RLBGX"
+      end
+
+      if row[@translations[:type][:output]] == "Investment Purchase"
+        row[@translations[:type][:output]] =
+          "buy"
+      end
+
+      if row[@translations[:type][:output]] == "Reinvested Dividend"
+        row[@translations[:type][:output]] =
+          "dividend"
+      end
+
+      if row[@translations[:type][:output]] == "Investment Withdrawal"
+        row[@translations[:type][:output]] =
+          "sell"
+
+        # also convert the value from a negative to a positive
+        row[@translations[:quantity][:output]] =
+          row[@translations[:quantity][:output]].to_f.abs
+      end
+    end
+  end
+
   def robinhood_formatting!
     # remove the following columns from the csv
     @csv.delete("Process Date")
     @csv.delete("Settle Date")
     @csv.delete("Description")
+
+    # delete "Amount" unless we are running in the fidelity mode
     @csv.delete("Amount") if ENV.fetch("FIDELITY", nil) != "true"
 
     # remove any rows in the "type" column that are set to the following:
@@ -194,6 +238,10 @@ class Format
   end
 
   def fidelity_pre_formatting!
+    return unless ENV.fetch("FIDELITY", nil) == "true"
+
+    puts "🏃 running fidelity pre-formatting..."
+
     # reconstruct the csv table in the exact same way except with the Amount header changed to price
     new_headers = []
     @csv.headers.each do |header|
