@@ -17,15 +17,15 @@ class Format
         output: "fee"
       },
       quantity: {
-        inputs: ["Quantity", "Shares/Unit"],
+        inputs: ["Quantity", "Shares/Unit", "Units"],
         output: "quantity"
       },
       symbol: {
-        inputs: ["Symbol", "Ticker", "Instrument", "Investment"],
+        inputs: ["Symbol", "Ticker", "Instrument", "Investment", "FundName"],
         output: "symbol"
       },
       type: {
-        inputs: ["Action", "Trans Code", "Transaction Type"],
+        inputs: ["Action", "Trans Code", "Transaction Type", "TransName"],
         output: "type",
         sub_translations: {
           "Buy": "buy",
@@ -51,6 +51,24 @@ class Format
     }
 
     @csv = load_csv
+  end
+
+  # a helper function to display a summery of the CSV file in the terminal
+  def summary_display
+    total_stock_purchased = 0
+    total_stock_sold = 0
+    @csv.each do |row|
+      total_stock_purchased += row[@translations[:quantity][:output]].to_f * row[@translations[:unit_price][:output]].to_f - row[@translations[:fee][:output]].to_f
+
+      total_stock_sold += row[@translations[:quantity][:output]].to_f * row[@translations[:unit_price][:output]].to_f - row[@translations[:fee][:output]].to_f if row[@translations[:type][:output]] == "sell"
+    end
+
+    puts "\n=========================="
+    puts "📊 csv file summary 📊"
+    puts "💰 tranactions summary:"
+    puts "  - total stock purchased: $#{total_stock_purchased}"
+    puts "  - total stock sold: $#{total_stock_sold}"
+    puts "==========================\n\n"
   end
 
   # Write the CSV file to the disk
@@ -180,11 +198,55 @@ class Format
     end
   end
 
+  def wex_formatting!
+    # remove the 'Source' column from the CSV
+    @csv.delete("Source")
+
+    # delete all the rows with type 'Investment Purchase - Cash receipt'
+    # I just don't know what these are
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Cash receipt") }
+
+    # delete all type rows with 'Custodial Management'
+    # ghostfolio doesn't support fees yet IIRC
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Custodial Management") }
+
+    # skip cash withdrals on initial import ('Investment Withdrawal - Cash disbursement')
+    @csv.delete_if { |row| row[@translations[:type][:output]].include?("Cash disbursement") }
+
+    @csv.each do |row|
+      if row[@translations[:symbol][:output]] == "AMERICAN FUNDS BALANCED FND R6"
+        row[@translations[:symbol][:output]] =
+          "RLBGX"
+      end
+
+      if row[@translations[:type][:output]] == "Investment Purchase"
+        row[@translations[:type][:output]] =
+          "buy"
+      end
+
+      if row[@translations[:type][:output]] == "Reinvested Dividend"
+        row[@translations[:type][:output]] =
+          "dividend"
+      end
+
+      next unless row[@translations[:type][:output]] == "Investment Withdrawal"
+
+      row[@translations[:type][:output]] =
+        "sell"
+
+      # also convert the value from a negative to a positive
+      row[@translations[:quantity][:output]] =
+        row[@translations[:quantity][:output]].to_f.abs
+    end
+  end
+
   def robinhood_formatting!
     # remove the following columns from the csv
     @csv.delete("Process Date")
     @csv.delete("Settle Date")
     @csv.delete("Description")
+
+    # delete "Amount" unless we are running in the fidelity mode
     @csv.delete("Amount") if ENV.fetch("FIDELITY", nil) != "true"
 
     # remove any rows in the "type" column that are set to the following:
@@ -194,6 +256,10 @@ class Format
   end
 
   def fidelity_pre_formatting!
+    return unless ENV.fetch("FIDELITY", nil) == "true"
+
+    puts "🏃 running fidelity pre-formatting..."
+
     # reconstruct the csv table in the exact same way except with the Amount header changed to price
     new_headers = []
     @csv.headers.each do |header|
@@ -256,13 +322,13 @@ class Format
     @csv.delete_if { |row| remove_rows.include?(row[@translations[:type][:output]].to_s) }
 
     # for each row in the csv, loop through it and replace the 'price' field with the resulting data from the 'historical_stock_price' method
-    if ENV.fetch("FIDELITY", nil) == "true"
-      @csv.each do |row|
-        price = historical_stock_price(row[@translations[:symbol][:output]], row[@translations[:date][:output]])
+    return unless ENV.fetch("FIDELITY", nil) == "true"
 
-        # update the row with the new price
-        row[@translations[:unit_price][:output]] = price
-      end
+    @csv.each do |row|
+      price = historical_stock_price(row[@translations[:symbol][:output]], row[@translations[:date][:output]])
+
+      # update the row with the new price
+      row[@translations[:unit_price][:output]] = price
     end
   end
 

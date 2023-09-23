@@ -27,8 +27,11 @@ class FormatCLI
 
     # platform specific formatting
     @format.schwab_formatting!
+    @format.wex_formatting!
     @format.robinhood_formatting!
     @format.fidelity_formatting!
+
+    @format.summary_display
 
     # write the formatted csv file to the disk
     @format.write!
