@@ -67,7 +67,7 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
-    rubocop-rspec (2.24.0)
+    rubocop-rspec (2.24.1)
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
@@ -93,7 +93,7 @@ DEPENDENCIES
   rubocop (~> 1.48)
   rubocop-github (~> 0.20)
   rubocop-performance (~> 1.16)
-  rubocop-rspec (~> 2.22)
+  rubocop-rspec (~> 2.24)
   simplecov (~> 0.22)
   simplecov-erb (~> 1.0)
 
