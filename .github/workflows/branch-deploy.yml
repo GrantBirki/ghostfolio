@@ -37,7 +37,7 @@ jobs:
         with:
           host: ${{ vars.SSH_HOST }}
           port: ${{ vars.SSH_PORT }}
-          username: ${{ vars.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: ~/ghostfolio/script/deploy -r="${{ steps.branch-deploy.outputs.ref }}" -f="${{ steps.branch-deploy.outputs.fork_checkout }}" -d="ghostfolio" -n="${{ steps.branch-deploy.outputs.fork_full_name }}"
