@@ -54,18 +54,18 @@ fi
 if [[ -n $fork ]]; then
   echo "fork deployment requested"
   forkarray=($fork)
-  sudo git checkout -b $fork || sudo git fetch --all && sudo git reset --hard origin/$BASE_BRANCH && sudo git branch -D $fork && sudo git checkout -b $fork
-  sudo git pull "https://github.com/$fork_full_name.git" ${forkarray[1]}
+  git checkout -b $fork || git fetch --all && git reset --hard origin/$BASE_BRANCH && git branch -D $fork && git checkout -b $fork
+  git pull "https://github.com/$fork_full_name.git" ${forkarray[1]}
 else
   echo "branch deployment requested"
-  sudo git fetch --all
-  sudo git reset --hard origin/$ref
+  git fetch --all
+  git reset --hard origin/$ref
 fi
 
 echo "[-] Killing old docker processes"
-sudo -E bash -c 'source ~/.profile && docker compose down -t 1'
+docker compose down -t 1
 
 echo "[i] Building docker containers"
-sudo -E bash -c 'source ~/.profile && docker compose up --build -d'
+docker compose --env-file ./.env -f docker-compose.yml up -d --build
 
 echo "[+] Containers are now running!"
