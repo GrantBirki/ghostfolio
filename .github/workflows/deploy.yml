@@ -29,7 +29,7 @@ jobs:
         with:
           host: ${{ vars.SSH_HOST }}
           port: ${{ vars.SSH_PORT }}
-          username: ${{ vars.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: ~/ghostfolio/script/deploy -r="main" -d="ghostfolio"
