@@ -3,7 +3,7 @@ run:
 	docker compose down -t 1
 
 	@echo "\033[0;34m[#] Building docker containers\033[0m"
-	docker compose --env-file ./.env -f docker-compose.yml up -d
+	docker compose --env-file ./.env -f docker-compose.yml up -d --build
 
 	@echo "\e[32m[#] Containers are now running!\e[0m"
 
