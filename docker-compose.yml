@@ -16,6 +16,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - ingress
 
   postgres:
     image: postgres:15
@@ -38,6 +40,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+networks:
+  ingress:
+    name: ingress
+    external: true
 
 volumes:
   postgres:
