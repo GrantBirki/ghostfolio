@@ -1,6 +1,6 @@
 # ghostfolio 👻
 
-[![deploy](https://github.com/GrantBirki/ghostfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/GrantBirki/ghostfolio/actions/workflows/deploy.yml) [![Unlock On Merge](https://github.com/GrantBirki/ghostfolio/actions/workflows/unlock-on-merge.yml/badge.svg)](https://github.com/GrantBirki/ghostfolio/actions/workflows/unlock-on-merge.yml) [![terraform](https://github.com/GrantBirki/ghostfolio/actions/workflows/terraform.yml/badge.svg)](https://github.com/GrantBirki/ghostfolio/actions/workflows/terraform.yml)
+[![deploy](https://github.com/GrantBirki/ghostfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/GrantBirki/ghostfolio/actions/workflows/deploy.yml) [![Unlock On Merge](https://github.com/GrantBirki/ghostfolio/actions/workflows/unlock-on-merge.yml/badge.svg)](https://github.com/GrantBirki/ghostfolio/actions/workflows/unlock-on-merge.yml)
 
 A self-hosted version of [ghostfolio](https://github.com/ghostfolio/ghostfolio), deployed in Azure
 
