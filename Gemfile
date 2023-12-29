@@ -6,7 +6,7 @@ group :development do
   gem "rspec", "~> 3.12"
   gem "rubocop", "~> 1.48"
   gem "rubocop-github", "~> 0.20"
-  gem "rubocop-performance", "~> 1.16"
+  gem "rubocop-performance", "~> 1.20"
   gem "rubocop-rspec", "~> 2.22"
   gem "ruby-lsp", "~> 0.13.0"
   gem "simplecov", "~> 0.22"
