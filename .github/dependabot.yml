@@ -3,18 +3,20 @@ updates:
   - package-ecosystem: bundler
     vendor: true
     directory: "/"
+    groups:
+      ruby-dependencies:
+        patterns:
+          - "*"
     schedule:
-      interval: weekly
-      day: "monday"
-      time: "21:00"
+      interval: monthly
 
   - package-ecosystem: "docker"
     # Look for a `Dockerfile` in the `root` directory
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
