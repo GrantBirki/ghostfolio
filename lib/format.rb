@@ -273,13 +273,13 @@ class Format
   def fidelity_formatting!
     @csv.each do |row|
       # replace all symbol values that are VAN IS S&amp;P500 IDX TR with VFFSX
-      if row[@translations[:symbol][:output]] == "VAN IS S&amp;P500 IDX TR"
+      if row[@translations[:symbol][:output]] == "VAN IS S&amp;P500 IDX TR" || row[@translations[:symbol][:output]] == "VANG 500 IDX IS SEL"
         row[@translations[:symbol][:output]] =
           "VFFSX"
       end
 
       # replace all symbol values that are FID GR CO POOL CL O with FDGRX
-      if row[@translations[:symbol][:output]] == "FID GR CO POOL CL O"
+      if row[@translations[:symbol][:output]] == "FID GR CO POOL CL O" || row[@translations[:symbol][:output]] == "FID GR CO POOL CL S"
         row[@translations[:symbol][:output]] =
           "FDGRX"
       end
