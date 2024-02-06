@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: github/branch-deploy@v8.2.0
+      - uses: github/branch-deploy@v9.0.0
         id: branch-deploy
         with:
           admins: GrantBirki
@@ -33,7 +33,7 @@ jobs:
 
       - name: ssh remote deploy
         if: ${{ steps.branch-deploy.outputs.continue == 'true' && steps.branch-deploy.outputs.noop != 'true' }}
-        uses: appleboy/ssh-action@2451745138b602d3e100a6def50c8e4e39591d4c # pin@v1.0.2
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # pin@v1.0.3
         with:
           host: ${{ vars.SSH_HOST }}
           port: ${{ vars.SSH_PORT }}
