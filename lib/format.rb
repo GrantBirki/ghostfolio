@@ -268,6 +268,8 @@ class Format
     end
 
     @csv = CSV::Table.new(@csv.map { |row| CSV::Row.new(new_headers, row.fields) })
+
+    puts @csv
   end
 
   def fidelity_formatting!
@@ -353,6 +355,25 @@ class Format
   end
 
   def load_csv
+    # before we load the CSV, make a best effort attempt to strip out any junk
+    # open the file and remove any whitespace / newlines at the beginning and end of the file
+    # Open the file in read mode, read it into memory, and close it
+    file_content = File.read(@path)
+
+    # remove any whitespace / newlines at the beginning and end of the file
+    file_content.strip!
+
+    # remove any lines that contain "Plan name:,"
+    file_content = file_content.split("\n").reject { |line| line.include?("Plan name:,") }.join("\n")
+    # remove any lines that contain "Date Range,"
+    file_content = file_content.split("\n").reject { |line| line.include?("Date Range,") }.join("\n")
+
+    # remove any new lines from the beginning of the file
+    file_content = file_content.split("\n").reject { |line| line == "" }.join("\n")
+
+    # Open the file in write mode, write the modified content, and close it
+    File.write(@path, file_content)
+
     puts "📁 loading csv file: #{@path}"
     CSV.read(@path, headers: true)
   end
