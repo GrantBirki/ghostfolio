@@ -268,8 +268,6 @@ class Format
     end
 
     @csv = CSV::Table.new(@csv.map { |row| CSV::Row.new(new_headers, row.fields) })
-
-    puts @csv
   end
 
   def fidelity_formatting!
