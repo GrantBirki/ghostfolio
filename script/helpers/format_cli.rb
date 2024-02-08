@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../../lib/format"
+require_relative "../../lib/historical_data_fetcher"
 
 # Get the first cli argument which is the file path
 CSV_INPUT_PATH = ARGV[0]
@@ -14,6 +15,9 @@ class FormatCLI
   end
 
   def run
+    # fetch historical data
+    HistoricalData.fetch_all
+
     # pre-processing
     @format.fidelity_pre_formatting!
 
