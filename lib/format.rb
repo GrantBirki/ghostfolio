@@ -337,7 +337,7 @@ class Format
   # helper method to get the historical stock price for a given symbol and date
   # CSV's with 5 year historical data are available from Yahoo Finance
   def historical_stock_price(symbol, date)
-    parsed_date = Date.strptime(date, '%d/%m/%Y')
+    parsed_date = Date.strptime(date, "%d/%m/%Y")
     # covert the date to YYYY-MM-DD format
     parsed_date = parsed_date.strftime("%Y-%m-%d")
 
