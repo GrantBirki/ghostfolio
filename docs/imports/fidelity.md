@@ -22,8 +22,3 @@ Date,Investment,Transaction Type,Amount,Shares/Unit
 Set the env var `FIDELITY=true` before running the following script
 
 Now you can parse it with `FIDELITY=true script/format <path_to_csv> <account_id>`
-
-## Notes
-
-- Make sure all the `lib/historical_data` files are up to date from Yahoo finance
-- Make sure extra data that isn't csv data is stripped from the file that Fidelity gives you
