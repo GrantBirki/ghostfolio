@@ -1,6 +1,6 @@
 services:
   ghostfolio:
-    image: ghostfolio/ghostfolio:2.66.3
+    image: ghostfolio/ghostfolio:2.69.0
     restart: unless-stopped
     env_file:
       - ./.env
