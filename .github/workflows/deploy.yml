@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: deployment check
-        uses: github/branch-deploy@v9.1.1
+        uses: github/branch-deploy@v9
         id: deployment-check
         with:
           merge_deploy_mode: "true"
